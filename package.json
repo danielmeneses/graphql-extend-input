@@ -1,0 +1,40 @@
+{
+  "name": "graphql-extend-input",
+  "version": "1.0.0",
+  "description": "Allowing Input to be extended",
+  "main": "lib/main/index.js",
+  "module": "lib/module/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "start": "run-p 'build:* -- --watch'",
+    "build:module": "cross-env MODULE=true babel src -d lib/module",
+    "build:main": "babel src -d lib/main",
+    "build": "run-p clean build:*"
+  },
+  "keywords": [
+    "graphql",
+    "extend",
+    "input"
+  ],
+  "author": "Daniel Meneses <pro.danielmeneses@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.42",
+    "@babel/preset-env": "^7.0.0-beta.42",
+    "@babel/runtime": "^7.0.0-beta.42",
+    "cross-env": "^5.1.4",
+    "eslint": "^4.19.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "npm-run-all": "^4.1.2",
+    "prettier": "1.11.1",
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "graphql": "^0.13.2"
+  },
+  "engines": {
+    "node": ">=6.10"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2017,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended"
+  ],
+  "rules": {
+    "curly": ["error", "multi"],
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "bracketSpacing": true,
+      "jsxBracketSameLine": true,
+      "semi": true
+    }]
+  }
+}
