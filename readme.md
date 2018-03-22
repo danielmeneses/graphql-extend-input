@@ -1,5 +1,7 @@
 # graphql-extend-input
 
+[![npm version](https://img.shields.io/npm/v/graphql-extend-input.svg)](https://npm.im/graphql-extend-input) ![Licence](https://img.shields.io/npm/l/graphql-extend-input.svg) [![Github issues](https://img.shields.io/github/issues/danielmeneses/graphql-extend-input.svg)](https://github.com/danielmeneses/graphql-extend-input/issues) [![Github stars](https://img.shields.io/github/stars/danielmeneses/graphql-extend-input.svg)](https://github.com/danielmeneses/graphql-extend-input/stargazers)
+
 Extend graphql Inputs.
 
 ## Why?
