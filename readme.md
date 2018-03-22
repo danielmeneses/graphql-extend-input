@@ -7,7 +7,7 @@ Extend graphql Inputs.
 ## Why?
 
 The Simple answer is, `extend input MyInput` is not part of the GraphQL specs.
-So, let's say you need to add specific fields to an `Input` on a remote fetched schema. In this case, you'll have to actually write that all that input schema fields in this client, so now we have this duplication and this is really hard to maintain. This happens quite frequently if you work in a graphql gateway and you need to merge schemas from graphql microservices.
+So, let's say you need to add specific fields to an `Input` on a remote fetched schema. In this case, you'll have to actually rewrite whole input schema, so now we have this duplication and it's really hard to maintain. This happens quite often if you are to build a graphql gateway and you need to merge the schemas from graphql microservices.
 
 Hopefully this will be introduced into the specs sooner or later!
 
