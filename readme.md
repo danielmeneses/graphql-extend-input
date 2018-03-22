@@ -114,6 +114,10 @@ console.log(newSchema);
     title: String!
     date: Date
   }
+
+  extend type Query {
+    newGetBooks(filter: [NewBookInput]!): Book
+  }
 */
 ```
 
