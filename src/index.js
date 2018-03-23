@@ -9,13 +9,25 @@ const getInnerProps = (lines, startIndex) => {
   for (let i = startIndex + 1; i < lines.length; i++) {
     const line = lines[i].match(/(\w{1,}:\s{0,}[\w\[\]!]{1,}!{0,}){0,}\}/);
     if (line) {
-      if (line[1]) linesToAdd.push(`${INDENT_SPACE}${line[1]}`);
+      if (line[1]) linesToAdd.push(cleanLine(line[1]));
       return linesToAdd;
     }
-    linesToAdd.push(lines[i].replace(RM_INI_SPACES, INDENT_SPACE));
+    linesToAdd.push(cleanLine(lines[i]));
   }
   return null;
 };
+
+const isInnerLine = (line) => {
+  if(typeof line === 'string'){
+    return (line.match(/[\{\}]/) === null);
+  }
+}
+
+const cleanLine = (line, inner=true) => {
+  if(typeof line === 'string'){
+    return line.replace(/^\s+/g, inner ? INDENT_SPACE : '');
+  }
+}
 
 /**
  * Extend graphql input type
@@ -29,23 +41,24 @@ const extendInputFromText = (input, extend) => {
   let changedLinesText = '';
   for (let i = 0; i < linesExtend.length; i++) {
     const lineExtend = linesExtend[i].toString();
-    const pattern = /[\s]{0,}(\w+){0,}[\s]{0,}extend[\s]{1,}input[\s]{1,}(\w+)[\s]{0,}\{[\s]{0,}/;
+    const pattern = /((\w+)[\s]+extend|^[\s]?extend)[\s]+input[\s]+(\w+)[\s+]?\{[\s+]?/;
     const matchs = lineExtend.match(pattern);
     if (!matchs || !matchs[2]) {
       // add aditionalSchema
-      additionalSchema.push(lineExtend);
+      const inner = isInnerLine(lineExtend);
+      additionalSchema.push(cleanLine(lineExtend, inner));
       continue;
     }
 
-    const inputName = matchs[2];
-    const newInputName = matchs[1];
+    const inputName = matchs[3];
+    const newInputName = matchs[2];
     if (!inputName) continue;
 
     const linesToAdd = getInnerProps(linesExtend, i);
     i += linesToAdd.length + 1; // one more '}'
     const linesInput = input.split(EOL);
     for (let ii = 0; ii < linesInput.length; ii++) {
-      const lineInput = linesInput[ii];
+      const lineInput = cleanLine(linesInput[ii], false);
       const pattern = /[\s]{0,}input[\s]{1,}(\w+)[\s]{0,}\{[\s]{0,}/;
       const matchs = lineInput.match(pattern);
       if (!matchs || matchs[1] !== inputName) continue;
