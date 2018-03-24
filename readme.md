@@ -114,7 +114,6 @@ console.log(newSchema);
     title: String!
     date: Date
   }
-
   extend type Query {
     newGetBooks(filter: [NewBookInput]!): Book
   }
@@ -135,23 +134,65 @@ console.log(newSchema);
 /** Output:
 
   scalar Date
-
   input BookInput {
     author: String
     price: Float
     title: String!
     date: Date
   }
-
   type Book {
     id: ID!
     title: String
     author: String
     price: Float
   }
-
   type Query {
     getBooks(filter: [BookInput]!): Book
+  }
+
+*/
+```
+
+### Multiple extends - similar to union
+
+```js
+
+const remoteFetchedSchema = `
+  input PersonInput {
+    firstname: String!
+    lastname: String!
+  }
+
+  input AddressBookInput {
+    street: String!
+    phone: String!
+  }
+`;
+
+const newSchema = gqlExtI(remoteFetchedSchema, `
+  EmployeeInput extend input PersonInput, AddressBookInput {
+    salary: Float!
+    department: String!
+  }
+
+  extend type Query {
+    getEmployNumber(input: EmployeeInput): Int!
+  }
+`);
+
+console.log(newSchema);
+/** Output:
+
+  input EmployeeInput {
+    salary: Float!
+    department: String!
+    street: String!
+    phone: String!
+    firstname: String!
+    lastname: String!
+  }
+  extend type Query {
+    getEmployNumber(input: EmployeeInput): Int!
   }
 
 */
