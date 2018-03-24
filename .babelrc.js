@@ -4,7 +4,7 @@ module.exports = {
   comments: false,
   presets: [
     [
-      '@babel/preset-env',
+      '@babel/preset-es2015',
       {
         shippedProposals: true,
         modules: process.env.MODULE ? false : 'commonjs',
@@ -16,7 +16,7 @@ module.exports = {
     ]
   ],
   plugins: [
-    "add-module-exports",
+    'add-module-exports',
     [
       '@babel/transform-runtime',
       {
