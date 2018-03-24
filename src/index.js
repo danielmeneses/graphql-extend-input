@@ -2,13 +2,17 @@ import { printSchema } from 'graphql/utilities';
 import { EOL } from 'os';
 
 const INDENT_SPACE = '  ';
-const INPUT_NAME_LOOKUP_PATTERN = /([\W]|^)input\s+(\w+)[\s]{0,}/;
-const EXTEND_PATTERN = /((\w+)\s+extend|^[\s+]{0,}extend)\s+input\s+(\w+)[\s+]?(([\s]{0,},[\s]{0,}(\w+)[\s]{0,})+){0,}\{/;
+const INPUT_NAME_LOOKUP_PATTERN = /([\W]|^)(input|enum)\s+(\w+)[\s]{0,}\{?/;
+const EXTEND_PATTERN = /((\w+)\s+extend|^[\s+]{0,}extend)\s+(input|enum)\s+(\w+)[\s+]?(([\s]{0,},[\s]{0,}(\w+)[\s]{0,})+){0,}\{?/;
 const INNER_PROP_PATTERN = /(\w{1,}:\s{0,}[\w\[\]!]{1,}!{0,}){0,}\}/;
+const ONE_LINE_EXTEND = /[\w\s]+\{(\s){0,}\}/;
 
 const getInnerProps = (lines, startIndex) => {
   const linesToAdd = [];
   if (!lines) return null;
+  // check if as '{'
+  if (lines[startIndex] && lines[startIndex].match(ONE_LINE_EXTEND)) return [];
+
   for (let i = startIndex + 1; i < lines.length; i++) {
     const line = lines[i].match(INNER_PROP_PATTERN);
     if (line) {
@@ -54,15 +58,15 @@ const extendInputFromText = (input, extend) => {
   for (let i = 0; i < linesExtend.length; i++) {
     const lineExtend = linesExtend[i];
     const matchs = lineExtend.match(EXTEND_PATTERN);
-    if (!matchs || !matchs[3]) {
+    if (!matchs || !matchs[4]) {
       // add aditionalSchema
       additionalSchema.push(lineExtend);
       continue;
     }
 
-    const inputName = matchs[3];
+    const inputName = matchs[4];
+    const inputOrEnum = matchs[3];
     const newInputName = matchs[2];
-
     if (!inputName) continue;
 
     const linesToAdd = getInnerProps(linesExtend, i);
@@ -70,20 +74,20 @@ const extendInputFromText = (input, extend) => {
     const linesInput = input.split(EOL);
 
     // get additional extends
-    const additionalMatches = getAdditionalMatches(matchs[4]);
+    const additionalMatches = getAdditionalMatches(matchs[5]);
     if (additionalMatches && additionalMatches.length)
       for (const addInput of additionalMatches)
         for (let z = 0; z < linesInput.length; z++) {
           const matchs = linesInput[z].match(INPUT_NAME_LOOKUP_PATTERN);
-          if (matchs && matchs[2] === addInput)
+          if (matchs && matchs[3] === addInput && matchs[2] === inputOrEnum)
             linesToAdd.push(...getInnerProps(linesInput, z));
         }
 
     for (let ii = 0; ii < linesInput.length; ii++) {
       const lineInput = linesInput[ii];
       const matchs = lineInput.match(INPUT_NAME_LOOKUP_PATTERN);
-
-      if (!matchs || matchs[2] !== inputName) continue;
+      if (!matchs || matchs[2] !== inputOrEnum || matchs[3] !== inputName)
+        continue;
 
       // if new input then don't change the existing one
       linesInput.splice(ii + 1, 0, ...linesToAdd);
