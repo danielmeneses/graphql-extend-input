@@ -22,6 +22,7 @@
       "bracketSpacing": true,
       "jsxBracketSameLine": true,
       "semi": true
-    }]
+    }],
+    "no-useless-escape": "off"
   }
 }
